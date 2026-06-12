@@ -1,0 +1,17 @@
+# Wan 2.1 video generation dependencies
+# Recommended env: /mnt/data0/parth/ai_ed/ai_ed
+# Install: /mnt/data0/parth/ai_ed/ai_ed/bin/pip install -r requirements.txt
+
+git+https://github.com/huggingface/diffusers
+
+torch>=2.1.0
+transformers>=4.57.0
+accelerate>=0.34.0
+huggingface_hub>=0.25.0
+safetensors>=0.4.0
+pillow>=10.0.0
+opencv-python-headless>=4.8.0
+imageio[pyav]>=2.34.0
+tqdm>=4.66.0
+ftfy>=6.1.0
+sentencepiece>=0.2.0

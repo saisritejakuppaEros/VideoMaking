@@ -1,0 +1,2 @@
+# See ../requirements.txt for the full VideoMaking dependency set.
+-r ../requirements.txt
