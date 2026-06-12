@@ -1,0 +1,13 @@
+*/models/
+*/outputs/
+*/checkpoints/
+*/results/
+*/logs/
+*/temp/
+*/cache/
+*/__pycache__/
+*.pyc
+*.pyo
+*.pyd
+*.pyw
+*.pyz
