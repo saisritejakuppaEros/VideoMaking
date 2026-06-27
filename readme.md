@@ -175,3 +175,22 @@ The goal is to generate production-quality YouTube videos end-to-end from a rese
 To achieve this, the first step is to analyze a creator's existing videos and extract their "DNA" across four dimensions. **Narrative DNA** captures how the creator structures information, including hooks, curiosity gaps, information flow, sentence rhythm, vocabulary, recurring phrases, and storytelling patterns. **Vocal DNA** captures delivery style, separating speaker identity from performance characteristics such as pacing, pauses, emphasis, pitch variation, and prosody. **Visual DNA** captures scene composition and aesthetics, including shot types, animation usage, text overlays, color grading, transitions, and the relationship between visuals and narration. **Structural/Editing DNA** captures the higher-level rhythm of the video by modeling it as a sequence of scene types, durations, and transitions aligned with transcript segments.
 
 Currently, the available data consists of videos, transcripts, scene boundaries obtained through scene detection, and scene-level captions generated using VLMs. Given these assets, propose a technically sound pipeline for extracting the four forms of DNA, creating training representations, and learning creator-specific adapters. The focus should be on practical implementations that can be built using existing open-source models. In particular, explain how to construct training pairs, what representations should be learned, where LoRA adaptation is most useful, and how a director-style model can generate storyboards and editing plans from a new research script. The final output should be a system that takes a research script as input and produces a creator-style storyboard, narration plan, scene plan, and ultimately a complete video.
+
+
+“Prosody‑Aligned Editing: Cross‑Modal Creator Style Between Voice and Cuts”
+Core idea: Learn how a creator’s prosody (pauses, emphasis, F0 contour, speaking rate) aligns with cut points, overlays, zooms, and text pops, and then:
+predict a prosody pattern for a new script in that creator’s style;
+drive both TTS and editing plan from that cross‑modal alignment.
+
+Narrative DNA
+Targets: hooks, curiosity gaps, section ordering, sentence length and rhythm, phraseology.
+Vocal DNA
+Targets: performance parameters separate from voice identity: speaking rate, pause distribution, emphasis, pitch/energy contour.
+Structural / Editing DNA
+Targets: shot durations, cut frequency, type of transitions, relationship between A‑roll and B‑roll, where overlays/memes appear.
+
+
+
+SANA-Video operates at the global level. It sees all shots simultaneously in image latent space — not as a sequence of video clips but as a spatial layout of keyframes, the way a film editor sees a timeline of thumbnails. It understands the whole storyboard at once: what shot 1 looks like, what shot 7 looks like, how they relate visually, what the narrative arc is. This global awareness means it can enforce consistency not just between adjacent shots but across the entire video.
+LTX-2.3 operates at the local level. It takes one shot at a time and knows two things: the current shot's keyframe from SANA-Video's storyboard, and the last N frames of the previous shot's generated video. From those two inputs it generates the actual animated video clip with synchronized audio. It doesn't need to know about shot 7 when generating shot 2 — SANA-Video has already encoded that global plan into the keyframe it passes down.
+The storyboard layer sits above both. It takes the narration — the script, the vocal delivery plan, the concept sequence — and translates that into a visual shot plan that feeds SANA-Video. This is where the editorial decisions happen: what goes on screen when someone says something, what the cut rhythm is, when to show the speaker versus a diagram.
