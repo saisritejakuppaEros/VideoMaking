@@ -12,3 +12,4 @@
 *.pyd
 *.pyw
 *.pyz
+video_dataset/
