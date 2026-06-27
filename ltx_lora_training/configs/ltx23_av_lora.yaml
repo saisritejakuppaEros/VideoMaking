@@ -1,0 +1,85 @@
+# LTX-2.3 audio-video LoRA training for YouTube explainer style dataset.
+# Update LORA_TRIGGER / output_dir before training.
+
+model:
+  model_path: "/mnt/data0/harsha/new_paper/VideoMaking/video_generation_ltx/ID-LoRA/models/ltx-2.3-22b-dev.safetensors"
+  text_encoder_path: "/mnt/data0/harsha/new_paper/VideoMaking/video_generation_ltx/ID-LoRA/models/gemma-3-12b-it-qat-q4_0-unquantized"
+  training_mode: "lora"
+  load_checkpoint: null
+
+lora:
+  rank: 32
+  alpha: 32
+  dropout: 0.0
+  target_modules:
+    - "to_k"
+    - "to_q"
+    - "to_v"
+    - "to_out.0"
+
+training_strategy:
+  name: "text_to_video"
+  first_frame_conditioning_p: 0.5
+  with_audio: true
+  audio_latents_dir: "audio_latents"
+
+optimization:
+  learning_rate: 1.0e-4
+  steps: 2000
+  batch_size: 1
+  gradient_accumulation_steps: 4
+  max_grad_norm: 1.0
+  optimizer_type: "adamw"
+  scheduler_type: "linear"
+  scheduler_params: {}
+  enable_gradient_checkpointing: true
+
+acceleration:
+  mixed_precision_mode: "bf16"
+  quantization: null
+  load_text_encoder_in_8bit: false
+
+data:
+  preprocessed_data_root: "/mnt/data0/harsha/new_paper/VideoMaking/scene_captioning/outputs/scenes/.precomputed"
+  num_dataloader_workers: 2
+
+validation:
+  prompts:
+    - "A colorful animated explainer video in the style of educational YouTube content. A narrator discusses science while simple flat illustrations appear on screen with bold colors and smooth motion. The audio includes clear spoken narration and light background music."
+    - "An animated history explainer with cartoon characters and maps on screen. The camera holds on wide shots of illustrated battle scenes while a confident narrator speaks. Ambient room tone and subtle orchestral background music accompany the voiceover."
+  negative_prompt: "worst quality, inconsistent motion, blurry, jittery, distorted"
+  images: null
+  video_dims: [832, 512, 49]
+  frame_rate: 25.0
+  seed: 42
+  inference_steps: 30
+  interval: 100
+  guidance_scale: 4.0
+  stg_scale: 1.0
+  stg_blocks: [29]
+  stg_mode: "stg_av"
+  generate_audio: true
+  skip_initial_validation: false
+
+checkpoints:
+  interval: 250
+  keep_last_n: -1
+  precision: "bfloat16"
+
+flow_matching:
+  timestep_sampling_mode: "shifted_logit_normal"
+  timestep_sampling_params: {}
+
+hub:
+  push_to_hub: false
+  hub_model_id: null
+
+wandb:
+  enabled: false
+  project: "ltx-2.3-youtube-lora"
+  entity: null
+  tags: ["ltx2.3", "lora", "youtube"]
+  log_validation_videos: true
+
+seed: 42
+output_dir: "/mnt/data0/harsha/new_paper/VideoMaking/ltx_lora_training/outputs/youtube_explainer_lora"
